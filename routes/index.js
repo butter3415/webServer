@@ -10,6 +10,4 @@ router.get('/', function(req, res, next) {
 // 인덱스.ejs -> views 폴더
 // 컨트롤러 라우터
 
-
-
 module.exports = router;

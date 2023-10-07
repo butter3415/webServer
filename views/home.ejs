@@ -2,6 +2,12 @@
     #div_books img{
         cursor: pointer;    
     }
+
+    #div_books .bi-cart4{
+        cursor: pointer;
+        color:red;
+        font-size: 1.8rem;
+    }
 </style>
     <!--커서가 포인터-->
 
@@ -30,6 +36,8 @@
 
 <!--변수(index는 @ 붙여주기)--> 
 <!--도서검색 템플릿-->
+<!--@this : 나 자신의 오브젝트 값 저장-->
+
 <script type="x-handlebars-template" id="temp_books">  
     {{#each documents}}
          <div class="col-6 col-md-4 col-lg-2 mb-3">
@@ -42,6 +50,7 @@
                 </div>
                 <div class ="card-footer">
                     {{format price}}
+                    <i class="bi bi-cart4 float-end" book="{{book @this}}"></i>   
                 </div>
             </div>
         </div>
@@ -61,6 +70,11 @@
     Handlebars.registerHelper("format", function(price){
         if(price) return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원';
     });
+
+    Handlebars.registerHelper("book", function(book){
+        return JSON.stringify(book);    // object => String 변환
+    })
+
 </script>
 
 <script>
@@ -69,6 +83,17 @@
     let page =1;
 
     getBooks();
+
+    // 장바구니를 클릭한 경우
+    $("#div_books").on("click", ".bi", function(){
+        if(!sessionStorage.getItem("email")){
+            location.href="/users/login";
+        } else {
+            // 장바구니에 등록하는 작업
+            const book = JSON.parse($(this).attr("book"));  // string -> object
+            console.log(book);
+        }
+    })
 
     // 이미지를 클릭한 경우
     $("#div_books").on("click","img",function(){
