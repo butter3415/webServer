@@ -19,5 +19,6 @@
   };
 
   // Initialize Firebase
-  export const app = initializeApp(firebaseConfig);
+  export const app = initializeApp(firebaseConfig); 
+  // export 했으니 import 해서 사용 가능
   const analytics = getAnalytics(app);
