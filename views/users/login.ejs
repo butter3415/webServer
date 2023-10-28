@@ -63,10 +63,16 @@
             signInWithEmailAndPassword(auth, email, password)
             .then(success=>{
                 console.log(success);
-                alert("로그인에 성공했습니다.");
                 sessionStorage.setItem("email", email);
                 sessionStorage.setItem("uid", success.user.uid);
-                location.href="/";  // 루트로 이동 => menu.ejs 에서 지정
+                alert("로그인에 성공했습니다.");
+                
+                if(sessionStorage.getItem("target")){
+                    location.href=sessionStorage.getItem("target");
+                } else{
+                    location.href="/";  // 루트로 이동 => menu.ejs 에서 지정
+                }
+                
 
             }).catch(error=>{
                 console.log(error);

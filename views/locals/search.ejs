@@ -27,6 +27,7 @@
 
 <!--템플릿-->
 <!-- div_locals 에 넣어줄 템플릿-->
+<!--// @this : 값을 가져옴-->
 <script type="x-handlebars-template" id="temp_locals">
     <table class="table table-striped">
         {{#each documents}}
@@ -35,6 +36,8 @@
                 <td>{{address_name}}</td>
                 <td>{{phone}}</td>
                 <td><button class="btn btn-primary" x="{{x}}" y="{{y}}">위치보기</button></td>
+                <td><button class="btn btn-dark btn-sm favorite" local="{{toString @this}}">즐겨찾기</button></td>
+                
             </tr>
         {{/each}}
     </table>
@@ -42,11 +45,51 @@
 </script>
 
 <script>
+    Handlebars.registerHelper("toString", function(local){
+        return JSON.stringify(local);
+    })
+</script>
+
+<script type="module">
+
+    import { app } from "/javascripts/firebase.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+    const db=getDatabase(app);
+
     let query = $(frm.query).val();
     let page = 1;
     let size = 5;
 
     getLocals();
+
+    // 즐겨찾기 버튼 클릭한 경우
+    $("#div_locals").on("click",".favorite", async function(){
+        if(sessionStorage.getItem("uid")){
+            const local=JSON.parse($(this).attr("local"));
+            console.log(local);
+            const ref_favorite = ref(db, `favorite/${sessionStorage.getItem("uid")}/${local.id}`);
+            
+            const snapshot=await get(ref_favorite); // 비동기함수 -> 다른 동작이랑 같이 움직이는데 기다려! 하는게 await
+            // await 시험★
+
+            // console.log(snapshot.val());
+
+            if(snapshot.val()){
+                alert("즐겨찾기에 이미 추가되었습니다!");
+            }else{
+                await set(ref_favorite, local);
+                alert("즐겨찾기에 등록되었습니다!");
+            }
+        
+        } else{
+            sessionStorage.setItem("target", "/locals");
+            location.href="/users/login";       // 직접적인 페이지 X (login.ejs X)
+
+        }
+        
+    })
+
 
     // 위치보기 버튼 클릭한 경우
     $("#div_locals").on("click", "button", function(){
