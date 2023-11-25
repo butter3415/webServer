@@ -32,7 +32,7 @@
                 const email=sessionStorage.getItem("email");
                 const date = moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
                 
-                await addDoc(collection(db,'posts'),{date,email,title,body});
+                await addDoc(collection(db,'posts'),{date,email,title,body});   // 중괄호 - 객체
                 alert("등록완료")
                 location.href="/posts";
             }
